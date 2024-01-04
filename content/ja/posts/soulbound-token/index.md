@@ -4,12 +4,11 @@ date: 2023-02-25T19:39:46+09:00
 author: "https://github.com/tgfukuda"
 tags:
     - ethereum
-    - blockchain
     - SBT
-categories:
-    - blockchain
     - token
     - EIP
+categories:
+    - blockchain
 draft: true
 ---
 
