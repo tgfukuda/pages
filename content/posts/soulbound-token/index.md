@@ -10,6 +10,24 @@ tags:
 categories:
     - blockchain
 draft: true
+refs:
+    - link: https://vitalik.ca/general/2022/01/26/soulbound.html
+    - link: https://deliverypdf.ssrn.com/delivery.php?ID=923094092020029095122005104000026081113000025039022062022072072122008107009003102075053052033000011045114076075006121119093094041072061038014002064095071102087124008072047010085098109014121028111125075082005124016011123108024070101101106086030006016002&EXT=pdf&INDEX=TRUE
+    - link: https://eips.ethereum.org/EIPS/eip-5192
+    - link: https://eips.ethereum.org/EIPS/eip-5484
+    - link: https://eips.ethereum.org/EIPS/eip-4671
+    - link: https://eips.ethereum.org/EIPS/eip-5516
+    - link: https://eips.ethereum.org/EIPS/eip-5633
+    - link: https://eips.ethereum.org/EIPS/eip-5727
+    - link: https://eips.ethereum.org/EIPS/eip-4973
+    - link: https://eips.ethereum.org/EIPS/eip-4974
+    - link: https://eips.ethereum.org/EIPS/eip-5114
+    - link: https://ethereum-magicians.org/
+    - link: https://github.com/mcortesi/poap
+    - link: https://github.com/Proof-Of-Humanity/ProofOfHumanityV2
+    - link: https://dl.acm.org/doi/fullHtml/10.1145/3446983.3446992
+    - link: https://w3c.github.io/did-core/
+    - link: https://w3c-ccg.github.io/vc-api/
 ---
 
 ## Soul Bound Token
@@ -182,23 +200,3 @@ Privacy担保に関しても重要な論点であり, onchainでの解決に固�
 - privateな方が良いデータ (保有者の承認無しで参照できない方が良いもの)に関してはVCとして管理
 
 などonchain/offchainそれぞれの強みを活かした構成とする方が現実的と見える.
-
-## 参考
-
-1. https://vitalik.ca/general/2022/01/26/soulbound.html
-2. https://deliverypdf.ssrn.com/delivery.php?ID=923094092020029095122005104000026081113000025039022062022072072122008107009003102075053052033000011045114076075006121119093094041072061038014002064095071102087124008072047010085098109014121028111125075082005124016011123108024070101101106086030006016002&EXT=pdf&INDEX=TRUE
-3. https://eips.ethereum.org/EIPS/eip-5192
-4. https://eips.ethereum.org/EIPS/eip-5484
-5. https://eips.ethereum.org/EIPS/eip-4671
-6. https://eips.ethereum.org/EIPS/eip-5516
-7. https://eips.ethereum.org/EIPS/eip-5633
-8. https://eips.ethereum.org/EIPS/eip-5727
-9. https://eips.ethereum.org/EIPS/eip-4973
-10. https://eips.ethereum.org/EIPS/eip-4974
-11. https://eips.ethereum.org/EIPS/eip-5114
-12. https://ethereum-magicians.org/
-13. https://github.com/mcortesi/poap
-14. https://github.com/Proof-Of-Humanity/ProofOfHumanityV2
-15. https://dl.acm.org/doi/fullHtml/10.1145/3446983.3446992
-16. https://w3c.github.io/did-core/
-17. https://w3c-ccg.github.io/vc-api/

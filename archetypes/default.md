@@ -10,5 +10,3 @@ refs:
 ---
 
 # Title
-
-# Reference

@@ -24,14 +24,14 @@ refs:
 
 G-DSA (Generic Digital Signature Algorithm)はSchnorr署名,
 Elgamal署名などに基づき, 一般の群に対するDLPをセキュリティの根拠にするDSA.
-RSAは異なるもののECDSA, EdDSAなどはこれの亜種になるので簡単にまとめておく.
+RSAは異なるもののECDSA, EdDSAなどはこれの亜種になるので簡単にまとめておきます.
 
 ## Security: DLP
 
 任意の巡回群$ G $とその生成元$ g $に対して, $ h \in G $が与えられたときに$ g^k \equiv h $なるkを求める問題.
 この問題は常に難しいわけではないものの,
 $ G $によっては難しい(=効率的なアルゴリズムが無いと思われている)ため,
-その難しさを仮定してDSAのセキュリティの根拠として採用している.
+その難しさを仮定してDSAのセキュリティの根拠として採用しています.
 
 ## Key Generation
 
@@ -50,9 +50,9 @@ $ G $によっては難しい(=効率的なアルゴリズムが無いと思わ�
 
 ## Signature Algorithm
 
-任意のメッセージ$ m \in M $に対して, hash値$ H(m) $を計算する.
+任意のメッセージ$ m \in M $に対して, hash値$ H(m) $を計算します.
 乱数$ k \in \mathbb{Z}_q $を用意し, $ r = H'(R) $,$ R = g^k $と
-$ s \equiv k^{-1}(H(m) + xr) \pmod q $を計算する. pair ($ r, s $)が署名になる.
+$ s \equiv k^{-1}(H(m) + xr) \pmod q $を計算します. pair ($ r, s $)が署名になります.
 
 $k, k^{-1}$はsymmetricで扱いやすい方で定義されるので, 署名によってそれぞれを入れ替えた定義になっている可能性に注意.
 
