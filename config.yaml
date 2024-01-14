@@ -206,7 +206,7 @@ params:
   # 评论系统
   # Comment system
   comments:
-    enabled: true
+    enabled: false
     provider: "giscus" # custom | giscus
     giscus: &giscus
       repo: "Ice-Hazymoon/hugo-theme-luna"
@@ -295,11 +295,11 @@ params:
 
   # 文章分享功能
   share:
-    twitter: true
-    facebook: true
-    weibo: true
-    copyLinkText: true
-    qrcode: true
+    twitter: false
+    facebook: false
+    weibo: false
+    copyLinkText: false
+    qrcode: false
   
   qrcodeAPI: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="
 
@@ -324,7 +324,7 @@ params:
   # Twitter 页面设置
   # tweet page
   twitter:
-    enabled: true
+    enabled: false
     rsshub: "https://rsshub.rssforever.com" # rsshub url, see https://github.com/DIYgod/RSSHub
     id: "GenshinImpact" # Twitter ID
     # 如果为 true，Hugo 将下载图片和视频并进行优化，如果你在中国大陆地区，请谨慎启用这个选项
@@ -427,11 +427,11 @@ params:
     webp: true
 
   # 设置推特卡片样式
-  opengraph:
-    twitter: # see https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/getting-started
-      cardType: summary_large_image # summary | summary_large_image
-      site: "@Ice_Hazymoon"
-    image: "featured.png" # in assets folder | false
+  # opengraph:
+  #   twitter: # see https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/getting-started
+  #     cardType: summary_large_image # summary | summary_large_image
+  #     site: "@Ice_Hazymoon"
+  #   image: "featured.png" # in assets folder | false
 
   author: tgfukuda
   keywords:
@@ -444,7 +444,7 @@ build:
 
 languages:
   ja:
-    contentDir: content/ja
+    contentDir: content
     languageName: 日本語
     params:
       languageIcon: "images/i18n/ja.svg"
