@@ -1,0 +1,396 @@
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/"><channel><title>tgfukuda tech blog</title><atom:link href="%7balternate%20%7bRSS%20application/rss+xml%20%20index%20alternate%20%20false%20false%20true%20false%20false%200%7d%20/pages/index.xml%20https://tgfukuda.github.io/pages/index.xml%7d" rel="self" type="application/rss+xml"/><link>https://tgfukuda.github.io/pages/</link><managingEditor>tgfukuda</managingEditor><description>Japanese Web3 engineer</description><lastBuildDate>Sun, 14 Jan 2024 17:23:56 +0900</lastBuildDate><language>ja</language><generator>Hugo -- gohugo.io</generator><item><title>Shamir Secret Sharing</title><link>https://tgfukuda.github.io/pages/2024/01/14/shamir-secret-sharing.html/</link><pubDate>Sun, 14 Jan 2024 17:23:56 +0900</pubDate><guid>https://tgfukuda.github.io/pages/2024/01/14/shamir-secret-sharing.html/</guid><description>
+&lt;h2 class="group " id="sss"
+>SSS&lt;a href="#sss"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>SSS(Shamir Secret Sharing Scheme)はt-of-nの秘密分散を達成するスキームで, つまりsecret(例えば秘密鍵)をn個のshareに分け,
+t個のshareが集まった場合のみに元のデータが復元できるようにする方法の１つです.&lt;/p>
+&lt;h3 class="group " id="アイデア"
+>アイデア&lt;a href="#%e3%82%a2%e3%82%a4%e3%83%87%e3%82%a2"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h3>
+&lt;p>SSSは&lt;/p>
+&lt;ul>
+&lt;li>次数$ t $の多項式$ f(x) $は$ t + 1 $個の点$ (i, f(i)) $が与えられた場合に復元可能&lt;/li>
+&lt;/ul>
+&lt;p>ということを利用してsecretを分割します
+(&lt;a
+class="link"
+href="https://en.wikipedia.org/wiki/Lagrange_polynomial"target="_blank" rel="noopener">ラグランジュ補完&lt;/a
+>
+も参考).&lt;/p>
+&lt;p>secretを$ a_0 $とするとき, dealer(秘密を分散する人)は
+$ f(x) = a_0 + a_1x + \cdots + a_tx^t $として, $ i = 1, \ldots, n $を代入し, 各$ (1, f(1)), (2, f(2)), \ldots, (n, f(n)) $を各shareとします.&lt;/p>
+&lt;p>元の$ f(x) $は$ t + 1 $点が集まった場合のみ復元でき, secretは$ f(0) $から得られます.&lt;/p>
+&lt;h4 class="group " id="受け取った値の検証"
+>受け取った値の検証&lt;a href="#%e5%8f%97%e3%81%91%e5%8f%96%e3%81%a3%e3%81%9f%e5%80%a4%e3%81%ae%e6%a4%9c%e8%a8%bc"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h4>
+&lt;p>dealerはDLPの定義される群$ \mathbb{G} $とその生成元$ G $を使って,
+$ A_k = a_k \cdot G $を各partyに送ることで,
+$$
+\begin{aligned}
+\sum^t_{k=0} A_k \cdot i^k &amp;amp;= (\sum^t_{k=0} a_k \cdot i^k) \cdot G \
+&amp;amp;= f(i) \cdot G
+\end{aligned}
+$$
+で$ f(x) $上の点$ (i, f(i)) $であることの確認ができます.&lt;/p>
+&lt;h3 class="group " id="dealerなしのverifiableなsss"
+>DealerなしのVerifiableなSSS&lt;a href="#dealer%e3%81%aa%e3%81%97%e3%81%aeverifiable%e3%81%aasss"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h3>
+&lt;p>dealerありでのSSSSは秘密の分散が目的にもかかわらず,
+dealerはsecretを知っていなければならないという問題がありますが,
+実際にはdealerなしで,
+各partyがprotocolに従ったことの検証を含む形での実行が可能です
+(Verifiable Secret Sharing, &lt;a
+class="link"
+href="https://eprint.iacr.org/2021/1397"target="_blank" rel="noopener">VSS&lt;/a
+>
+).&lt;/p>
+&lt;p>具体的には各partyがdealerの役割を行い, それぞれから送られてきたshareの和をshareとすることになります.
+$ P_0, P_1, \ldots, P_n $でshareを分割することをベースに説明します.&lt;/p>
+&lt;ol start="0">
+&lt;li>secretの初期化. $ P_i $は$ x_i $をランダムに生成します. &lt;a
+class="link"
+href="https://en.wikipedia.org/wiki/Commitment_scheme"target="_blank" rel="noopener">commitment scheme&lt;/a
+>
+などでその正当性を担保します.&lt;/li>
+&lt;li>$ x_i $に対して各$ P_i $は$ f_i(x) $を生成し, $ A^j_i, f_i(j) $を$ P_j $に対して送り, $ P_j $は渡されたshareが$ f_i(j) $であることを確かめます.&lt;/li>
+&lt;/ol>
+&lt;p>この状態で各$ P_i $は手元に&lt;/p>
+&lt;ul>
+&lt;li>自身で生成したsecretの一部$ x_i $と自身で生成した関数の一点$ f_i(i) $&lt;/li>
+&lt;li>各$ P_j $から送られてきたshare $ f_j(i) $とその担保$ A^i_j $&lt;/li>
+&lt;/ul>
+&lt;p>を持つことになります.&lt;/p>
+&lt;p>secretを$ x = x_0 + x_1 + \cdots + x_n $, 多項式を$ f(x) = \sum^n_{k=0} f_k(x) $とすれば,それらを各partyは知らない一方で,
+自身のshareを$ (i, \sum^n_{k=0} f_k(i)) $としてSSSに参加できます.&lt;/p>
+&lt;p>これを用いて, Distributed Key Generation(&lt;a
+class="link"
+href="https://medium.com/toruslabs/what-distributed-key-generation-is-866adc79620"target="_blank" rel="noopener">DKG&lt;/a
+>
+)などが達成できます.&lt;/p></description></item><item><title>Generic DSA</title><link>https://tgfukuda.github.io/pages/2023/12/10/generic-dsa.html/</link><pubDate>Sun, 10 Dec 2023 11:58:18 +0900</pubDate><guid>https://tgfukuda.github.io/pages/2023/12/10/generic-dsa.html/</guid><description>
+&lt;h1 class="group " id="generic-dsa"
+>Generic DSA&lt;a href="#generic-dsa"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h1>
+&lt;p>G-DSA (Generic Digital Signature Algorithm)はSchnorr署名,
+Elgamal署名などに基づき, 一般の群に対するDLPをセキュリティの根拠にするDSA.&lt;/p>
+&lt;p>RSAは異なるもののECDSA, EdDSAなどはこれの亜種になるので簡単にまとめておきます.&lt;/p>
+&lt;h2 class="group " id="security-dlp"
+>Security: DLP&lt;a href="#security-dlp"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>任意の巡回群$ G $とその生成元$ g $に対して, $ h \in G $が与えられたときに$ g^k \equiv h $なるkを求める問題です.&lt;/p>
+&lt;p>この問題は常に難しいわけではないものの,
+$ G $によっては難しい(=効率的なアルゴリズムが無いと思われている)ため,
+その難しさを仮定してDSAのセキュリティの根拠として採用しています.&lt;/p>
+&lt;h2 class="group " id="key-generation"
+>Key Generation&lt;a href="#key-generation"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>&lt;strong>公開情報&lt;/strong>:&lt;/p>
+&lt;ul>
+&lt;li>長さ$ l $($ l \equiv 0 \pmod{64} \land 512 \leq l \leq 1024 $)の素数$ p $&lt;/li>
+&lt;li>160bitの$ p-1 $の素因数$ q $&lt;/li>
+&lt;li>$ \mathbb{Z}_p $上の位数$ q $の巡回群$ G $とその生成元$g$&lt;/li>
+&lt;li>メッセージの集合$ M $として, ２つのhash関数$ H \in M \mapsto \mathbb{Z}_q, H&amp;rsquo; \in G \mapsto \mathbb{Z}_q $&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>秘密鍵&lt;/strong>: 一様にランダムな$ x \in \mathbb{Z}_q $の秘密鍵$ x $&lt;/p>
+&lt;p>&lt;strong>公開鍵&lt;/strong>: $ G \ni y = g^x $&lt;/p>
+&lt;p>ただし, 多くのアルゴリズムでこの条件のみでは不十分で, 群の性質を用いた攻撃を避けるための工夫がなされていることが多いです.&lt;/p>
+&lt;h2 class="group " id="signature-algorithm"
+>Signature Algorithm&lt;a href="#signature-algorithm"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>任意のメッセージ$ m \in M $に対して, hash値$ H(m) $を計算します.
+乱数$ k \in \mathbb{Z}_q $を用意し, $ r = H&amp;rsquo;(R) $,$ R = g^k $と
+$ s \equiv k^{-1}(H(m) + xr) \pmod q $を計算します. pair ($ r, s $)が署名になります.&lt;/p>
+&lt;p>$k, k^{-1}$はsymmetricで扱いやすい方で定義されるので, 署名によってそれぞれを入れ替えた定義になっている可能性に注意.&lt;/p>
+&lt;h3 class="group " id="-k-の役割"
+>$ k $の役割&lt;a href="#-k-%e3%81%ae%e5%bd%b9%e5%89%b2"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h3>
+&lt;p>$ k $は相異なるメッセージ$ m, m&amp;rsquo; $に対して署名値$ (r, s), (r&amp;rsquo;, s&amp;rsquo;) $が得られた場合に,
+鍵がリークすることを防ぐ目的で組み込まれている.&lt;/p>
+&lt;p>同一の$ k $で$ s - s&amp;rsquo; $を計算すると,
+$$
+\begin{aligned}
+s - s&amp;rsquo; &amp;amp;= k^{-1}(H(m) + xr) \pmod q - k^{-1}(H(m&amp;rsquo;) + xr) \pmod q \
+&amp;amp;= k^{-1}((H(m) + xr) - (H(m&amp;rsquo;) + xr)) \pmod q \
+&amp;amp;= k^{-1}(H(m) - H(m&amp;rsquo;)) \pmod q
+\end{aligned}
+$$&lt;/p>
+&lt;p>$ H(m) - H(m&amp;rsquo;) \in \mathbb{Z}_q $であり, $ H(m), H(m&amp;rsquo;) $は公開情報から計算できて, $ k^{-1} = (s - s&amp;rsquo;)(H(m) - H(m&amp;rsquo;))^{-1} \pmod q $で計算できるので,
+$ x = r^{-1}(sk - H(m)) \pmod q $が計算できてしまう.&lt;/p>
+&lt;div class="border-yellow-400 border-green-400 border-red-400 border-blue-400">&lt;/div>
+&lt;div class="bg-yellow-400 bg-green-400 bg-red-400 bg-blue-400">&lt;/div>
+&lt;div class="text-yellow-400 text-green-400 text-red-400 text-blue-400">&lt;/div>
+&lt;div
+class="border-blue-400 bg-blue-400 my-4 ml-0 flex items-start rounded border-l-4 bg-opacity-10 p-5 dark:bg-darkBgAccent"
+>
+&lt;div class="mr-2">
+&lt;i class="eva text-blue-400 eva-question-mark-circle-outline text-2xl">&lt;/i>
+&lt;/div>&lt;p style="margin: 0;">同一のメッセージに対しては同じ$ k $を用いても問題無い
+($H(m) - H(m&amp;rsquo;) \equiv 0 \pmod q$になる)ので,
+&lt;a
+class="link"
+href="https://www.rfc-editor.org/rfc/rfc6979"target="_blank" rel="noopener">RFC 6979&lt;/a
+>
+やEdDSAなどのように決定的に$ k $を計算するスキームもある.&lt;/p>&lt;/div>
+&lt;h2 class="group " id="verification-algorithm"
+>Verification Algorithm&lt;a href="#verification-algorithm"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>$ M, (r, s), y $に対して,&lt;/p>
+&lt;ol>
+&lt;li>$ r, s \in \mathbb{Z}_q $&lt;/li>
+&lt;li>$ R&amp;rsquo; = g^{H(m)s^{-1} \pmod{q}}y^{rs^{-1} \pmod q} \in G $を計算して, $ H&amp;rsquo;(R&amp;rsquo;) = r $だったら受理&lt;/li>
+&lt;/ol>
+&lt;p>これは
+$$
+\begin{aligned}
+R&amp;rsquo; &amp;amp;= g^{H(m)s^{-1} \pmod q}y^{rs^{-1} \pmod q} \
+&amp;amp;= g^{H(m)s^{-1} \pmod q}g^{xrs^{-1} \pmod q} \
+&amp;amp;= g^{H(m)s^{-1} + xrs^{-1} \pmod q} \
+&amp;amp;= g^{(H(m) + xr)s^{-1} \pmod q} \
+&amp;amp;= g^{kk^{-1}(H(m) + xr)s^{-1} \pmod q} \
+&amp;amp;= g^{kss^{-1} \pmod q} \
+&amp;amp;= g^{k} \
+&amp;amp;= R
+\end{aligned}
+$$
+で$ H&amp;rsquo;(R&amp;rsquo;) = r $なら署名が正しいことが言える.&lt;/p>
+&lt;fieldset class="my-16 border-t border-gray-300 dark:border-darkBorder">
+&lt;legend class="mx-auto my-0 px-2">&lt;/legend>
+&lt;/fieldset>
+&lt;h1 class="group " id="ecdsa"
+>ECDSA&lt;a href="#ecdsa"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h1>
+&lt;p>ECDSAがG-DSAとしてどう当てはまるかを&lt;a
+class="link"
+href="https://en.bitcoin.it/wiki/Secp256k1"target="_blank" rel="noopener">secp256k1&lt;/a
+>
+でみると,&lt;/p>
+&lt;ul>
+&lt;li>$ l $: $ 2^{256} - 2^{32} - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1 $&lt;/li>
+&lt;li>$ G $: 有限体上の楕円曲線$ y^2 = x^3 + 7 $の点の集合とその点の加算で定義される群&lt;/li>
+&lt;li>$ q $: 0xFFFFFFFF FFFFFFFF FFFFFFFF FFFFFFFE BAAEDCE6 AF48A03B BFD25E8C D0364141&lt;/li>
+&lt;li>$ H $: SHA256, $ H&amp;rsquo; $: 各点からx座標への射&lt;/li>
+&lt;/ul>
+&lt;fieldset class="my-16 border-t border-gray-300 dark:border-darkBorder">
+&lt;legend class="mx-auto my-0 px-2">&lt;/legend>
+&lt;/fieldset>
+&lt;h1 class="group " id="補足"
+>補足&lt;a href="#%e8%a3%9c%e8%b6%b3"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h1>
+&lt;details class="accordion rounded border dark:border-darkBorder" >
+&lt;summary class="flex items-center px-4 py-2 font-bold before:mr-0.5 before:-mt-0.5 before:text-xl before:text-gray-400">中国剰余定理(CRT)と拡張ユークリッドを用いた$ \mathbb{Z}_p $上の逆元計算をGPTに説明させたやつ&lt;/summary>
+&lt;div class="border-t px-4 py-2 dark:border-darkBorder">
+&lt;h2 class="group " id="calculating-the-inverse-using-chinese-remainder-theorem"
+>Calculating the Inverse using Chinese Remainder Theorem&lt;a href="#calculating-the-inverse-using-chinese-remainder-theorem"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>Prime Factorization:&lt;/strong>
+Start by factoring the modulus $ p $ into its prime factors. If $ p $ is a prime number, then its only prime factor is itself. Let $ p = p_1 \times p_2 \times \ldots \times p_k $, where $ p_1, p_2, \ldots, p_k $ are the prime factors of $ p $.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Compute Partial Modular Inverses:&lt;/strong>
+For each prime factor $ p_i $, compute the modular inverse $ x_i $ of $ a $ modulo $ p_i $:
+$$ a \cdot x_i \equiv 1 \pmod{p_i} $$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Apply Chinese Remainder Theorem:&lt;/strong>
+Use the CRT to combine the partial modular inverses $ x_i $ into a single value $ x $ that is the modular inverse of $ a $ modulo $ p $:
+$$ x \equiv \sum_{i=1}^{k} a_i \cdot x_i \cdot y_i \pmod{p} $$
+where $ a_i = \frac{p}{p_i} $, and $ y_i $ is the modular inverse of $ a_i $ modulo $ p_i $.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Final Result:&lt;/strong>
+The value $ x $ obtained from step 3 is the modular inverse of $ a $ modulo $ p $.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>It&amp;rsquo;s important to note that the Chinese Remainder Theorem can only be applied when the moduli $ p_i $ are pairwise coprime, and the existence of an inverse depends on whether $ a $ is relatively prime to $ p $. If $ gcd(a, p) = 1 $, then $ a $ has an inverse modulo $ p $.&lt;/p>
+&lt;h2 class="group " id="compute-partial-modular-inverses-using-extended-euclidean-algorithm"
+>Compute Partial Modular Inverses using Extended Euclidean Algorithm&lt;a href="#compute-partial-modular-inverses-using-extended-euclidean-algorithm"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>For each prime factor $ p_i $, compute the modular inverse $ x_i $ of $ a $ modulo $ p_i $ using the Extended Euclidean Algorithm:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>Extended Euclidean Algorithm:&lt;/strong>
+The Extended Euclidean Algorithm finds the coefficients $ x $ and $ y $ such that $ ax + by = \text{gcd}(a, b) $. In our case, $ a $ is the modulus $ p_i $ and $ b $ is the element $ a $.&lt;/p>
+&lt;p>The algorithm proceeds as follows:&lt;/p>
+&lt;ul>
+&lt;li>Initialize $ r_1 = a $, $ r_2 = b $, $ x_1 = 1 $, $ x_2 = 0 $, $ y_1 = 0 $, $ y_2 = 1 $.&lt;/li>
+&lt;li>Iterate until $ r_n $ is zero:
+&lt;ul>
+&lt;li>$ q_n = \lfloor \frac{r_{n-2}}{r_{n-1}} \rfloor $&lt;/li>
+&lt;li>$ r_n = r_{n-2} - q_n \cdot r_{n-1} $&lt;/li>
+&lt;li>$ x_n = x_{n-2} - q_n \cdot x_{n-1} $&lt;/li>
+&lt;li>$ y_n = y_{n-2} - q_n \cdot y_{n-1} $&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Modular Inverse:&lt;/strong>
+After completing the Extended Euclidean Algorithm, if the greatest common divisor $ r_n $ is 1, then $ x_{n-1} $ is the modular inverse of $ a $ modulo $ p_i $.&lt;/p>
+&lt;p>The modular inverse $ x_i $ satisfies the equation:
+[a \cdot x_i \equiv 1 \pmod{p_i}]&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Repeat for Each Prime Factor:&lt;/strong>
+Repeat the Extended Euclidean Algorithm for each prime factor $ p_i $ to obtain the partial modular inverses $ x_i $ for all $ i $.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div>
+&lt;/details></description></item><item><title>ECDSAと閾値署名</title><link>https://tgfukuda.github.io/pages/2023/12/10/ecdsa%E3%81%A8%E9%96%BE%E5%80%A4%E7%BD%B2%E5%90%8D.html/</link><pubDate>Sun, 10 Dec 2023 11:31:09 +0900</pubDate><guid>https://tgfukuda.github.io/pages/2023/12/10/ecdsa%E3%81%A8%E9%96%BE%E5%80%A4%E7%BD%B2%E5%90%8D.html/</guid><description>
+&lt;h2 class="group " id="ecdsa"
+>ECDSA&lt;a href="#ecdsa"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>ECDSAはBitcoin, Ethereumのトランザクションで鍵の保有者によって署名されたことの証明となる署名を担うスキーマです.
+有限体上の楕円曲線を群とするDSA.&lt;/p>
+&lt;h3 class="group " id="アルゴリズム"
+>アルゴリズム&lt;a href="#%e3%82%a2%e3%83%ab%e3%82%b4%e3%83%aa%e3%82%ba%e3%83%a0"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h3>
+&lt;p>wikiに載っている通り. 実装の&lt;a
+class="link"
+href="https://www.secg.org/sec1-v2.pdf"target="_blank" rel="noopener">標準&lt;/a
+>
+も参照.&lt;/p>
+&lt;p>Bitcoin, Ethereumで採用されている楕円曲線は&lt;a
+class="link"
+href="https://en.bitcoin.it/wiki/Secp256k1"target="_blank" rel="noopener">secp256-k1&lt;/a
+>
+.
+Hash関数はBitcoinではSHA256, EthereumではKeccac256.&lt;/p>
+&lt;p>以下では出力となる署名を$ r, s, v $, 各入力と変数を&lt;/p>
+&lt;ul>
+&lt;li>秘密鍵: $ d $&lt;/li>
+&lt;li>公開鍵: $ Q = d * G $&lt;/li>
+&lt;li>メッセージ: $ M $&lt;/li>
+&lt;li>楕円曲線のベースポイント: $ G $
+とします.&lt;/li>
+&lt;/ul>
+&lt;h4 class="group " id="署名"
+>署名&lt;a href="#%e7%bd%b2%e5%90%8d"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h4>
+&lt;ol>
+&lt;li>メッセージをhashする $ m = H(M) $.
+&lt;ul>
+&lt;li>実際のメッセージのhashに当たっては, &lt;a
+class="link"
+href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/"target="_blank" rel="noopener">RLP&lt;/a
+>
+などの理解も必要になります.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>乱数$ k $を$ [1, n) $で得る. $ n $は群の位数.
+&lt;ul>
+&lt;li>プレステ3の事例のように, この$ k $を異なるメッセージに対して再利用してしまうと秘密鍵がリークする.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>$ R = k * G $を計算し, $ r = R_x \pmod n $で$ r $を得る. $ r = 0 $になったら別の$ k $でやり直し.&lt;/li>
+&lt;li>$ s = (m + r * d) / k $で$ s $を得る.&lt;/li>
+&lt;/ol>
+&lt;p>$ (r, s) $が署名になりますが, &lt;a
+class="link"
+href="https://ethereum.stackexchange.com/questions/26/what-is-a-replay-attack"target="_blank" rel="noopener">リプレイ攻撃&lt;/a
+>
+を防ぐのに, $ v $をもつのがblockchainだと一般的.&lt;/p>
+&lt;p>計算方法はchainによりますが, &lt;a
+class="link"
+href="https://eips.ethereum.org/EIPS/eip-155"target="_blank" rel="noopener">EIP-155&lt;/a
+>
+前のtxだと
+$ v = 27 + (r \pmod 2) $,
+採用後は$ v = chainId * 2 + 35 + (r \pmod 2) $になります.&lt;/p>
+&lt;p>Ethereumのmainnetは1で, &lt;a
+class="link"
+href="https://chainid.network/"target="_blank" rel="noopener">https://chainid.network/&lt;/a
+>
+だったり, &lt;a
+class="link"
+href="https://eips.ethereum.org/EIPS/eip-695"target="_blank" rel="noopener">EIP-695&lt;/a
+>
+などを使って得られる.&lt;/p>
+&lt;h4 class="group " id="検証"
+>検証&lt;a href="#%e6%a4%9c%e8%a8%bc"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h4>
+&lt;ol>
+&lt;li>$ r, s $が$ [1, n) $であることの検証.&lt;/li>
+&lt;li>$ r = (ms^{-1} * G + rs^{-1}*Q)_x \pmod n $であることの検証.&lt;/li>
+&lt;/ol>
+&lt;p>&lt;a
+class="link"
+href="https://tgfukuda.github.io/pages/2023/12/10/generic-dsa.html/">こちら&lt;/a
+>
+も参照.&lt;/p>
+&lt;h2 class="group " id="閾値署名"
+>閾値署名&lt;a href="#%e9%96%be%e5%80%a4%e7%bd%b2%e5%90%8d"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h2>
+&lt;p>Bitcoinにおいては&lt;a
+class="link"
+href="https://learnmeabitcoin.com/technical/p2ms"target="_blank" rel="noopener">P2MS&lt;/a
+>
+などが存在し, プロトコルレベルでマルチシグに対応しているので, 複数の鍵があればそのままECDSAを閾値署名に拡張できます.&lt;/p>
+&lt;p>一方で, EthereumではナイーブなECDSAしか使用できないので, 鍵自体もしくは署名生成自体を分散化対応したものにしなければいけない.&lt;/p>
+&lt;h3 class="group " id="ecdsaの閾値署名スキーム"
+>ECDSAの閾値署名スキーム&lt;a href="#ecdsa%e3%81%ae%e9%96%be%e5%80%a4%e7%bd%b2%e5%90%8d%e3%82%b9%e3%82%ad%e3%83%bc%e3%83%a0"
+>&lt;i class="eva eva-link ml-3 align-middle text-theme opacity-0 transition ease-in-out group-hover:opacity-100">&lt;/i>&lt;/a
+>&lt;/h3>
+&lt;p>&lt;a
+class="link"
+href="https://eprint.iacr.org/2020/1390.pdf"target="_blank" rel="noopener">servey&lt;/a
+>
+がよくまとまっているので参照.&lt;/p>
+&lt;ul>
+&lt;li>&lt;a
+class="link"
+href="https://eprint.iacr.org/2019/523.pdf"target="_blank" rel="noopener">DKLs19&lt;/a
+>
+&lt;/li>
+&lt;li>&lt;a
+class="link"
+href="https://bitcointalk.org/index.php?topic=511074.20"target="_blank" rel="noopener">https://bitcointalk.org/index.php?topic=511074.20&lt;/a
+>
+&lt;/li>
+&lt;li>&lt;a
+class="link"
+href="https://eprint.iacr.org/2011/535.pdf"target="_blank" rel="noopener">SPDZ&lt;/a
+>
+: MPCの応用&lt;/li>
+&lt;li>&lt;a
+class="link"
+href="https://www.fireblocks.com/blog/gg18-and-gg20-paillier-key-vulnerability-technical-report/"target="_blank" rel="noopener">GG18&lt;/a
+>
+&lt;ul>
+&lt;li>&lt;a
+class="link"
+href="https://www.fireblocks.com/blog/gg18-and-gg20-paillier-key-vulnerability-technical-report/"target="_blank" rel="noopener">mpc threshold signature gg18/gg20 vulnerability&lt;/a
+>
+で脆弱性が指摘されているので非推奨&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a
+class="link"
+href="https://bitcoin.stackexchange.com/questions/114182/how-do-musig2-and-frost-compare-for-multisig-key-aggregation-schemes"target="_blank" rel="noopener">Multisig2/FROST&lt;/a
+>
+&lt;/li>
+&lt;li>&lt;a
+class="link"
+href="https://tgfukuda.github.io/pages/2024/01/14/shamir-secret-sharing.html/">SSS&lt;/a
+>
+を使った鍵の分割&lt;/li>
+&lt;/ul></description></item></channel></rss>
