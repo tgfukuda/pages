@@ -51,8 +51,10 @@ Hash関数はBitcoinではSHA256, EthereumではKeccac256.
 
 #### 署名
 
-1. メッセージをhashする $ m = H(M) $. 実際のメッセージのhashに当たっては, [RLP](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/)などの理解も必要になります.
-2. 乱数$ k $を$ [1, n) $で得る. $ n $は群の位数. プレステ3の事例のように, この$ k $を異なるメッセージに対して再利用してしまうと秘密鍵がリークする.
+1. メッセージをhashする $ m = H(M) $.
+    - 実際のメッセージのhashに当たっては, [RLP](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/)などの理解も必要になります.
+2. 乱数$ k $を$ [1, n) $で得る. $ n $は群の位数.
+    - プレステ3の事例のように, この$ k $を異なるメッセージに対して再利用してしまうと秘密鍵がリークする.
 3. $ R = k * G $を計算し, $ r = R_x \pmod n $で$ r $を得る. $ r = 0 $になったら別の$ k $でやり直し.
 4. $ s = (m + r * d) / k $で$ s $を得る.
 
@@ -60,7 +62,8 @@ $ (r, s) $が署名になりますが, [リプレイ攻撃](https://ethereum.sta
 
 計算方法はchainによりますが, [EIP-155](https://eips.ethereum.org/EIPS/eip-155)前のtxだと
 $ v = 27 + (r \pmod 2) $,
-採用後は$ v = chainId * 2 + 35 + (r \pmod 2) $になる.
+採用後は$ v = chainId * 2 + 35 + (r \pmod 2) $になります.
+
 Ethereumのmainnetは1で, https://chainid.network/ だったり, [EIP-695](https://eips.ethereum.org/EIPS/eip-695)などを使って得られる.
 
 #### 検証
@@ -72,7 +75,8 @@ Ethereumのmainnetは1で, https://chainid.network/ だったり, [EIP-695](http
 
 ## 閾値署名
 
-Bitcoinにおいては[P2MS](https://learnmeabitcoin.com/technical/p2ms)などが存在し, プロトコルレベルでマルチシグに対応しているので, 複数の鍵があればそのままECDSAを閾値署名に拡張できる.
+Bitcoinにおいては[P2MS](https://learnmeabitcoin.com/technical/p2ms)などが存在し, プロトコルレベルでマルチシグに対応しているので, 複数の鍵があればそのままECDSAを閾値署名に拡張できます.
+
 一方で, EthereumではナイーブなECDSAしか使用できないので, 鍵自体もしくは署名生成自体を分散化対応したものにしなければいけない.
 
 ### ECDSAの閾値署名スキーム
