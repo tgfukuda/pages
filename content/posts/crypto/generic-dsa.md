@@ -7,7 +7,7 @@ tags:
     - dsa
 categories:
     - dsa
-draft: true
+draft: false
 refs:
     - link: https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=31802861a53d62ba4af1584344ad1fc0c8103886
     - link: https://eprint.iacr.org/2019/114.pdf
