@@ -6,6 +6,10 @@ init:
 	
 .PHONY: server
 server:
-	@ if [ -z $(env) ]; then echo "set env variable. valid options are" && ls config | grep -v _default && exit 1; fi
+	@if [ -z $(env) ]; then echo "set env variable. valid options are" && ls config | grep -v _default && exit 1; fi
 	hugo server -D --environment $(env)
 	
+.PHONY: build
+build:
+	@if [ -z $(env) ]; then echo "set env variable. valid options are" && ls config | grep -v _default && exit 1; fi
+	hugo --environment $(env) --gc --minify --cleanDestinationDir
