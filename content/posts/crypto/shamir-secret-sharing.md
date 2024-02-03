@@ -5,7 +5,7 @@ author: "https://github.com/tgfukuda"
 tags:
     - cryptography
 categories: []
-draft: true
+draft: false
 refs:
     - link: https://en.wikipedia.org/wiki/Shamir's_secret_sharing
     - link: https://eprint.iacr.org/2020/1390.pdf

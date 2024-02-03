@@ -147,29 +147,25 @@ $manuMain:
 
 # 如果你不想要导航栏，你可以删除这一段
 # If you don't want the navbar, you can delete this paragraph
-menu:
+menu: &menu
   main:
     - *mainMenuHome
     - *mainMenuAbout
-    - *mainMenuLinks
-    - *mainMenuArchives
-    - *mainMenuTwitter
-    - *mainMenuGitHub
-    - *mainMenuSearch
+    # - *mainMenuGitHub
   # 副导航 / sub-navigation
-  # sub:
-  #   - name: Categories
-  #     weight: 20
-  #     identifier: categories
-  #     params:
-  #       icon: eva eva-folder
-  #     url: /categories/
-  #   - name: Tags
-  #     weight: 30
-  #     identifier: tags
-  #     params:
-  #       icon: eva eva-pricetags
-  #     url: /tags/
+  sub:
+    - name: Categories
+      weight: 20
+      identifier: categories
+      params:
+        icon: eva eva-folder
+      url: /categories/
+    - name: Tags
+      weight: 30
+      identifier: tags
+      params:
+        icon: eva eva-pricetags
+      url: /tags/
 
 markup:
   highlight:
@@ -274,11 +270,11 @@ params:
     enabled: true
     # 网站创建时间
     # Site creation time
-    creatTime: 2016/12/12
+    creatTime: 2024/02/03
   
   #  网站创建年份
   # Site creation year
-  since: "2016"
+  since: "2024"
 
   # 显示文章过时提醒
   # show warning when outdated info detected
@@ -290,11 +286,11 @@ params:
 
   # 自动切换夜间模式（使用设备设置）
   # Automatic switching of night mode (using device settings)
-  autoDarkMode: false
+  autoDarkMode: true
 
   # 文章分享功能
   share:
-    twitter: false
+    twitter: true
     facebook: false
     weibo: false
     copyLinkText: false
@@ -317,7 +313,7 @@ params:
   # GitHub 页面设置
   # github page
   github:
-    id: "torvalds" # or ["torvalds", "gvanrossum"]
+    id: "tgfukuda" # or ["torvalds", "gvanrossum"]
     minStars: 5 # 最小 star 项目 / min stars
 
   # Twitter 页面设置
@@ -452,16 +448,13 @@ languages:
         enabled: true
         file: "README.ja.md"
       comments:
-        enabled: true
+        enabled: false
         provider: "giscus"
         giscus:
           <<: *giscus
           lang: "ja"
     menu:
-      main:
-      - *mainMenuHome
-      - *mainMenuArchives
-      - *mainMenuSearch
+      <<: *menu
   # zh-cn:
   #   contentDir: content/zh-hans
   #   languageName: 中文
