@@ -1,6 +1,6 @@
 # github action fails without this file.
 baseURL: https://tgfukuda.github.io/pages/
-languageCode: en-us
+languageCode: ja
 defaultContentLanguage: ja
 title: "tgfukuda tech blog"
 enableRobotsTXT: true
@@ -153,7 +153,7 @@ menu: &menu
   main:
     - *mainMenuHome
     - *mainMenuAbout
-    - *mainMenuGitHub
+    # - *mainMenuGitHub
   # 副导航 / sub-navigation
   sub:
     - name: Categories
