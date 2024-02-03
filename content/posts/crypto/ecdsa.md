@@ -83,5 +83,6 @@ Bitcoinにおいては[P2MS](https://learnmeabitcoin.com/technical/p2ms)など�
 - https://bitcointalk.org/index.php?topic=511074.20
 - [SPDZ](https://eprint.iacr.org/2011/535.pdf): MPCの応用
 - [GG18](https://www.fireblocks.com/blog/gg18-and-gg20-paillier-key-vulnerability-technical-report/)
+    - [mpc threshold signature gg18/gg20 vulnerability](https://www.fireblocks.com/blog/gg18-and-gg20-paillier-key-vulnerability-technical-report/)で脆弱性が指摘されているので非推奨
 - [Multisig2/FROST](https://bitcoin.stackexchange.com/questions/114182/how-do-musig2-and-frost-compare-for-multisig-key-aggregation-schemes)
 - [SSS]({{< ref "shamir-secret-sharing" >}})を使った鍵の分割
